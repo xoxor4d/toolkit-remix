@@ -1,6 +1,14 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.9.3]
+### Added
+- Added the Alpha Card to Mesh Job Queue presentation to the StageCraft dependencies.
+
+## [1.9.2]
+### Added
+- Added the experimental Alpha Card to Mesh asset modifier to the StageCraft dependencies.
+
 ## [1.9.1]
 ### Fixed
 - Opened the workspace panels before querying lazy viewport content in the capture-swap and viewport hotkey E2E workflows.

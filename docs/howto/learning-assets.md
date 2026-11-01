@@ -168,5 +168,39 @@ The RTX Remix Toolkit provides a tool for manual joint remapping.
 
 5. Click "Apply" to re-author joint influences on the replacement mesh, matching the captured joint index.
 
+## Alpha Card to Mesh (Experimental)
+
+Alpha-tested foliage cards are expensive to path trace because every ray that crosses the transparent part of a card
+still runs the alpha test. The experimental **Alpha Card to Mesh** asset modifier cuts the card geometry along the
+alpha channel of its diffuse texture so only the opaque area remains, and disables alpha testing on the result.
+
+Run it like any asset modifier: select capture or replacement meshes in the **Stage Manager** and use the modifier
+row action, or open the **Asset Modifiers** window, pick **Alpha Card to Mesh**, and click **Run**. The Job Queue
+cuts the meshes, publishes the result with its textures into the project, and replaces the source reference; Revert
+and Undo restore it. The job details in the Job Queue list every handled mesh under **Converted meshes** with its
+face and vertex counts before and after the cut, or the reason it was left unchanged. Selecting a mesh through the
+Selection panel also selects its reference prim; the modifier accepts it and converts the meshes below it. The
+parameters:
+
+- **Alpha Threshold** is the alpha value at or above which a texel counts as opaque.
+- **Trace Resolution** is the size of the mask that is traced. Higher values follow the texture more closely and
+  produce more triangles.
+- **Simplify Tolerance** and **Minimum Island Area** reduce the triangle count by smoothing the outline and dropping
+  specks. **Minimal Vertex Outline** connects the traced cutoff with the fewest points within the tolerance.
+- **Edge Margin** grows the outline so bilinear filtering at the edge is not clipped. Use `0` when alpha testing is
+  disabled, because the cut edge then is the visible silhouette.
+- **Disable Alpha Test** authors the opaque alpha state on the material so the runtime renders the cut mesh as fully
+  opaque geometry.
+- **Thicken Mesh** extrudes the cut mesh backwards by **Thickness** mesh units. **Back Face** closes the extrusion;
+  turning it off keeps only the sides, which gives the illusion of thickness at a fraction of the polygons. **UV
+  Anti-Stretch** textures the sides with the band of the texture just inside the outline.
+- **Smooth Normals** rounds the rim of a thickened mesh by **Smoothing**. **Up-Facing Normals** blends every normal
+  towards the stage up axis by **Up Amount**, so a canopy of cards shades like one lit volume instead of a pile of
+  differently tilted planes.
+
+Skinned meshes, meshes with geometry subsets and meshes without a diffuse texture are left out. Animated meshes convert
+their first time sample. Running the modifier on a mesh that is already a cutout converts the original model again
+with the new settings; the original file is never modified.
+
 ***
 <sub> Need to leave feedback about the RTX Remix Documentation?  [Click here](https://github.com/NVIDIAGameWorks/rtx-remix/issues/new?assignees=nvdamien&labels=documentation%2Cfeedback%2Ctriage&projects=&template=documentation_feedback.yml&title=%5BDocumentation+feedback%5D%3A+) </sub>
